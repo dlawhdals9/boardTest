@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.dao.MybatisDAO">
+
+	<insert id="insert" parameterType="vo">
+		insert into board
+			(no, 
+			kor_name, 
+			eng_name, 
+			chn_name, 
+			jumin_nof, 
+			jumin_nob, 
+			birth1, 
+			birth2, 
+			birth3, 
+			sol_flag, 
+			sex, 
+			marry_flag, 
+			work_year, 
+			payment_type, 
+			desire_dept, 
+			jop_type, 
+			address, 
+			phone1, 
+			phone2, 
+			phone3, 
+			email, 
+			tech_lev, 
+			liquor) 
+		values
+			(board_no_seq.nextval, 
+			#{kor_name}, 
+			#{eng_name}, 
+			#{chn_name}, 
+			#{jumin_nof},
+			#{jumin_nob}, 
+			#{birth1}, 
+			#{birth2}, 
+			#{birth3}, 
+			#{sol_flag}, 
+			#{sex}, 
+			#{marry_flag}, 
+			#{work_year}, 
+			#{payment_type}, 
+			#{desire_dept}, 
+			#{jop_type}, 
+			#{address}, 
+			#{phone1}, 
+			#{phone2}, 
+			#{phone3}, 
+			#{email}, 
+			#{tech_lev}, 
+			#{liquor})
+	
+	</insert>
+	
+	<select id="selectCount" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<select id="getList" parameterType="java.util.HashMap" resultType="vo">
+		<![CDATA[
+		select * from(
+			select rownum rnum, TT.* from(
+				select * from board order by no desc
+			) TT where rownum <= #{endNo}
+		) where rnum >= #{startNo}
+		]]>
+	</select>
+	
+	<select id="selectByIdx" resultType="vo" parameterType="int">
+		select * from board where no=#{no}
+	</select>
+	
+	<update id="update" parameterType="vo">
+		update board set  
+			kor_name = #{kor_name},
+			eng_name = #{eng_name}, 
+			chn_name = #{chn_name}, 
+			jumin_nof = #{jumin_nof}, 
+			jumin_nob = #{jumin_nob}, 
+			birth1 = #{birth1}, 
+			birth2 = #{birth2}, 
+			birth3 = #{birth3}, 
+			sol_flag = #{sol_flag}, 
+			sex = #{sex}, 
+			marry_flag = #{marry_flag}, 
+			work_year = #{work_year}, 
+			payment_type = #{payment_type}, 
+			desire_dept = #{desire_dept}, 
+			jop_type = #{jop_type}, 
+			address = #{address}, 
+			phone1 = #{phone1}, 
+			phone2 = #{phone2}, 
+			phone3 = #{phone3}, 
+			email = #{email}, 
+			tech_lev = #{tech_lev}, 
+			liquor = #{liquor}
+			where no = #{no}
+	
+	</update>
+	<delete id="delete" parameterType="int">
+		delete from board where no=#{no}
+	</delete>
+	
+	<select id="selectSearchCount" parameterType="param" resultType="int">
+		select count(*) from board where 
+ 		<if test='search=="이름"'>
+			kor_name like '%'||#{searchText}||'%' or eng_name like '%'||#{searchText}||'%'
+		</if>
+		<if test='search=="성별"'>
+			sex like '%'||#{searchText}||'%' 
+		</if>
+		<if test='search=="기술등급"'>
+			tech_lev like '%'||#{searchText}||'%' 
+		</if>
+		<if test='search=="전체"'>
+			kor_name like '%'||#{searchText}||'%' or eng_name like '%'||#{searchText}||'%' or  sex like '%'||#{searchText}||'%' or tech_lev like '%'||#{searchText}||'%' 
+		</if>
+	
+	</select>
+	
+	<select id="selectSearchList" parameterType="param" resultType="vo">
+		select * from (
+			select rownum rnum, TT.* from (
+				select * from board where 
+					<if test='search=="이름"'>
+						kor_name like '%'||#{searchText}||'%' or eng_name like '%'||#{searchText}||'%'
+					</if>
+					<if test='search=="성별"'>
+						sex like '%'||#{searchText}||'%' 
+					</if>
+					<if test='search=="기술등급"'>
+						tech_lev like '%'||#{searchText}||'%' 
+					</if>
+					<if test='search=="전체"'>
+						kor_name like '%'||#{searchText}||'%' or eng_name like '%'||#{searchText}||'%' or  sex like '%'||#{searchText}||'%' or tech_lev like '%'||#{searchText}||'%' 
+					</if>
+				order by no desc
+		<![CDATA[
+			) TT where rownum <= #{endNo}
+		) where rnum >= #{startNo}
+		]]>
+	</select>
+	
+	<select id="selectImage" parameterType="int" resultType="String">
+		select image from board where no=#{no}
+	</select>
+	
+	<select id="checkJumin" parameterType="java.util.HashMap" resultType="int">
+		select count(*) from board where jumin_nof = #{jumin_nof} and jumin_nob = #{jumin_nob}
+	</select>
+	<select id="UpdateCheckJumin" parameterType="juminParam" resultType="int">
+		select count(*) from board where jumin_nof = #{jumin_nof} and jumin_nob = #{jumin_nob} and no != #{no}
+	</select>
+	
+	
+	
+	
+	<select id="selectDynamicSearchCount" parameterType="dynamicParam" resultType="int">
+		select count(*) from board where no > 0
+			<if test="sex != 'null'">
+				AND sex = #{sex}
+			</if>
+			<if test="tech_lev != 'null'">
+				AND tech_lev = #{tech_lev}
+			</if>
+			<if test="jop_type != 'null'">
+				AND jop_type=#{jop_type}
+			</if>
+			<if test="desire_dept != 'null'">
+				AND desire_dept=#{desire_dept}
+			</if>
+	</select>
+	
+	<select id="selectDynamicSearchList" parameterType="dynamicParam" resultType="vo">
+		select * from (
+			select rownum rnum, TT.* from (
+				select * from board where no > 0
+					<if test="sex != 'null'">
+						AND sex = #{sex}
+					</if>
+					<if test="tech_lev != 'null'">
+						AND tech_lev = #{tech_lev}
+					</if>
+					<if test="jop_type != 'null'">
+						AND jop_type=#{jop_type}
+					</if>
+					<if test="desire_dept != 'null'">
+						AND desire_dept=#{desire_dept}
+					</if>
+				order by no desc
+		<![CDATA[
+			) TT where rownum <= #{endNo}
+		) where rnum >= #{startNo}
+		]]>
+	</select>
+	
+	<select id="getSelectNo" resultType="int">
+		SELECT MAX(no) FROM board 
+	</select>
+	
+	<update id="insertImage" parameterType="vo">
+		update board set image = #{image} where no = #{no}
+	</update>
+	<update id="insertExel" parameterType="vo">
+		update board set exel = #{exel} where no = #{no}
+	</update>
+	<update id="insertWord" parameterType="vo">
+		update board set word = #{word} where no = #{no}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

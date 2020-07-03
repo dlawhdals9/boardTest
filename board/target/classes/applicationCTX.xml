@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="BoardVO" class="com.web.vo.BoardVO"/>
+	<bean id="BoardList" class="com.web.vo.BoardList"/>
+	<bean id="Param" class="com.web.vo.Param"/>
+	<bean id="dynamicParam" class="com.web.vo.DynamicParam"/>
+	<bean id="juminParam" class="com.web.vo.JuminParam"/>
+	
+</beans>
